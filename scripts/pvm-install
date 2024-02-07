@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+[[ -n $DEBUG ]] && set -x
+
+red='\033[0;31m'
+green='\033[0;32m'
+reset='\033[0m'
+
+# Set the MAKEPKG environment variable to 'yay'
+export MAKEPKG='yay'
+
+if [ -z "$1" ]; then
+  echo -e "${red}Please provide a PHP version as an argument (e.g., 7, 82)${reset}"
+  exit 1
+fi
+
+php_version="$1"
+
+# Check if the -r flag is specified for reinstallation
+reinstall=false
+if [ "$2" == "-r" ]; then
+  reinstall=true
+fi
+
+# Ensure the required directories exist
+mkdir -p "$HOME/bin"
+mkdir -p "$HOME/php-aur-src"
+
+# Clone the PHP AUR package based on the specified version
+src_directory="$HOME/php-aur-src/php$php_version"
+if [ "$reinstall" == true ]; then
+  # Remove the existing source directory if reinstalling
+  rm -rf "$src_directory"
+fi
+
+mkdir -p "$src_directory"
+cd "$src_directory"
+
+# If the source directory doesn't exist, or if -r flag is specified, clone the repository
+if [ ! -d .git ] || [ "$reinstall" == true ]; then
+  git clone "https://aur.archlinux.org/php$php_version.git" .
+else
+  git pull
+fi
+
+# Check if the repository was successfully cloned
+if [ $? -ne 0 ]; then
+  echo -e "${red}Failed to clone the PHP AUR package.${reset}"
+  exit 1
+fi
+
+# Check if the package is already built
+if [ -f "$src_directory/PKGBUILD" ]; then
+  echo -e "${green}PHP $php_version is already built.${reset}"
+else
+  # Build and install the package
+  makepkg -si
+
+  # Check if the installation was successful
+  if [ $? -ne 0 ]; then
+    echo -e "${red}Failed to compile and install PHP $php_version.${reset}"
+    exit 1
+  fi
+
+  echo -e "${green}PHP $php_version has been successfully compiled and installed.${reset}"
+
+  # Clean up after installation
+  makepkg --clean
+fi
+

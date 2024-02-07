@@ -1,0 +1,40 @@
+import = ["~/.config/alacritty/dracula.toml", "~/.config/alacritty/fonts.toml"]
+
+live_config_reload = true
+ipc_socket = true 
+
+[shell]
+program = "/bin/zsh"
+
+[env]
+TERM = 'xterm-256color'
+
+[window]
+padding = {x = 6,y = 6}
+decorations = "None"
+opacity = 0.94
+resize_increments = false
+title = "Alacritty"
+
+[scrolling]
+history = 10000
+multiplier = 4
+
+[font]
+size = 10
+offset = {x = 1, y = 6}
+glyph_offset = {x = 1, y = 1}
+builtin_box_drawing = true
+
+[colors]
+draw_bold_text_with_bright_colors = true
+transparent_background_colors = false
+
+[cursor]
+style = {shape = "Underline", blinking = "Never"}
+
+[terminal]
+osc52 = "CopyPaste"
+
+[mouse]
+hide_when_typing = true

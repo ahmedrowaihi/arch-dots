@@ -1,0 +1,236 @@
+
+[colors]
+bg = #141617
+fg = #d4be98
+gray = #665c54
+red = #ea6962
+green = #a9b665
+yellow = #d8a675
+blue = #83a598
+magenta = #d3869b
+cyan = #83a598
+orange = #fe8019
+;bg = #101010
+;fg = #d4be98
+;gray = #665c54
+;red = #ea6962
+;green = #a9b665
+;yellow = #d8a675
+;blue = #ffc799
+;magenta = #d3869b
+;cyan = #ffc799
+;orange = #fe8019
+
+[bar/main]
+;monitor = ${env:MONITOR:HDMI-1}
+enable-ipc = true
+width = 100%
+height = 25
+;bottom = true
+;offset-x = 1%
+;offset-y = 1%
+; radius = 1.0
+fixed-center = true
+background = ${colors.bg}
+foreground = ${colors.fg}
+line-size = 1
+line-color = ${colors.bg}
+border-size = 0
+radius-top = 0.0
+radius-bottom = 0.0
+border-color = #0D00564d
+padding-left = 0
+padding-right = 0
+module-margin-left = 1
+module-margin-right = 1
+font-0 = JetbrainsMono Nerd Font :style=Regular:size=11;
+font-1 = JetbrainsMono Nerd Font :style=Regular:size=11;
+font-2 = JetbrainsMono Nerd Font :style=Regular:size=11;
+modules-left = icon bspwm xwindow
+; modules-center = icon-s spotify prev play-pause next s a pacman-updates
+; modules-center = icon-s spotify prev play-pause next
+modules-right = memory disk pulseaudio-output network pacman-updates date
+separator = ""
+tray-position = none
+tray-padding = 0
+cursor-click = pointer
+eursor-scroll = ns-resize
+
+[module/pulseaudio-output]
+type = custom/script
+tail = true
+format-underline = ${colors.cyan}
+label-padding = 3
+label-foreground = ${colors.foreground}
+# Icons mixed from Font Awesome 5 and Material Icons
+# You can copy-paste your options for each possible action, which is more
+# trouble-free but repetitive, or apply only the relevant ones (for example
+# --node-blacklist is only needed for next-node).
+exec = pulseaudio-control --icons-volume "  ,  " --icon-muted "  "  listen
+click-right = exec pavucontrol &
+click-left = pulseaudio-control togmute
+click-middle = pulseaudio-control --node-blacklist "alsa_output.pci-0000_01_00.1.hdmi-stereo-extra2" next-node
+scroll-up = pulseaudio-control --volume-max 130 up
+scroll-down = pulseaudio-control --volume-max 130 down
+
+;[module/pulseaudio-control-input]
+;type = custom/script
+;tail = true
+;format-underline = ${colors.cyan}
+;label-padding = 2
+;label-foreground = ${colors.foreground}
+# Use --node-blacklist to remove the unwanted PulseAudio .monitor that are child of sinks
+;exec = pulseaudio-control  --node-type input --icons-volume "" --icon-muted "" --node-nickname "alsa_output.pci-0000_0c_00.3.analog-stereo:  Webcam" --node-nickname "alsa_output.usb-Kingston_HyperX_Virtual_Surround_Sound_00000000-00.analog-stereo:  Headphones" --node-blacklist "*.monitor" listen
+;click-right = exec pavucontrol &
+;click-left = pulseaudio-control --node-type input togmute
+;click-middle = pulseaudio-control --node-type input next-node
+;scroll-up = pulseaudio-control --node-type input --volume-max 130 up
+;scroll-down = pulseaudio-control --node-type input --volume-max 130 down
+
+[module/pacman-updates]
+type = custom/script
+exec = checkupdates | wc -l
+interval = 1000
+label =%output%
+format-foreground = ${colors.blue}
+format-background = ${colors.bg}
+
+[module/spotify]
+type = custom/script
+tail = true
+interval = 1
+format = <label>
+format-foreground = ${colors.gray}
+exec = ~/.config/polybar/scripts/scroll_spotify_status.sh
+
+[module/icon-s]
+type = custom/script
+exec = echo ""
+format-foreground = ${colors.green}
+; format = <label>
+
+[module/s]
+type = custom/script
+exec = echo "|"
+format-foreground = ${colors.fg}
+; format = <label>
+
+[module/a]
+type = custom/script
+exec = echo ""
+format-foreground = ${colors.red}
+
+[module/memory]
+type = custom/script
+exec = ~/.config/polybar/scripts/memory
+format-foreground     = ${colors.gray}
+interval = 1
+click-left = kitty -e btop
+
+[module/disk]
+type = custom/script
+exec = ~/.config/polybar/scripts/diskusage
+format-foreground     = ${colors.gray}
+interval = 5
+click-left = kitty -e ncdu
+
+[module/prev]
+type = custom/script
+exec = echo ""
+format = <label>
+click-left = playerctl previous -p spotify
+
+[module/play-pause]
+type = custom/ipc
+hook-1 = echo ""
+hook-0 = echo ""
+initial = 1
+click-left = playerctl play-pause -p spotify
+
+[module/next]
+type = custom/script
+exec = echo ""
+format = <label>
+click-left = playerctl next -p spotify
+
+[module/xwindow]
+type = internal/xwindow
+format = <label>
+label = %title%
+label-maxlen = 50
+label-empty = "[null]"
+
+[module/bspwm]
+type = internal/bspwm
+label-focused = %index%
+label-focused-background = ${colors.bg}
+label-focused-underline= ${colors.blue}
+label-focused-padding = 1
+label-occupied = %index%
+label-occupied-padding = 1
+label-urgent = %index%!
+label-urgent-background = ${colors.red}
+label-urgent-padding = 1
+label-empty = %index%
+label-empty-foreground = ${colors.gray}
+label-empty-padding = 1
+label-separator = " "
+
+[module/date]
+type = internal/date
+interval = 1
+format-margin = 0
+time = "%I:%M %p  "
+time-alt = "%A, %m/%d/%y  "
+label = %time%
+
+
+[module/icon]
+type = custom/script
+exec = echo "   "
+
+
+[module/network]
+type = internal/network
+interface = wlan0
+interval = 1.0
+accumulate-stats = true
+; unknown-as-up = true
+format-connected = <label-connected>
+format-connected-background = ${color.background}
+format-connected-foreground = ${colors.red}
+format-disconnected = <label-disconnected>
+format-disconnected-prefix = 睊
+format-disconnected-background = ${color.background}
+format-disconnected-foreground = #928374
+;label-connected = "%{A2:network.sh &:}直%{A}"
+label-connected = %{F#ea6962} %{F-} %essid%
+label-disconnected = "睊"
+ramp-signal-0 = 直
+ramp-signal-1 = 直
+ramp-signal-2 = 直
+
+[module/powermenu]
+type = custom/menu
+expand-left = true
+format-spacing = 1
+label-open = "  "
+label-close = ""
+label-separator = " "
+label-separator-foreground = ${colors.fg}
+menu-0-0 = ""
+menu-0-0-exec = sudo reboot
+menu-0-1 = "  "
+menu-0-1-exec = sudo poweroff
+
+[settings]
+screenchange-reload = true
+;compositing-background = xor
+;compositing-background = screen
+;compositing-foreground = source
+;compositing-border = over
+;pseudo-transparency = false
+
+[global/wm]
+margin-top = 2
+margin-bottom = 2

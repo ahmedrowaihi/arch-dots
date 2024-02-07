@@ -1,0 +1,19 @@
+* {
+    background:     #202020;
+    background-alt: #282828;
+    foreground:     #d4be98;
+    selected:       #83A598FF;
+    selected-alt:   #928374;
+    active:         #A9B665;
+    urgent:         #EA6962;
+}
+
+/* * {
+    background:     #101010;
+    background-alt: #1c1c1c;
+    foreground:     #dacfba;
+    selected:       #ffc799;
+    selected-alt:   #938b83;
+    active:         #A9B665;
+    urgent:         #EA6962;
+}*/

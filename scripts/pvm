@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+[[ -n $DEBUG ]] && set -x
+
+red='\033[0;31m'
+green='\033[0;32m'
+reset='\033[0m'
+
+if [ -z "$1" ]; then
+  echo -e "${red}Please provide a PHP version as an argument (e.g., 7, 82)${reset}"
+  exit 1
+fi
+
+php_version="$1"
+php_binary="/usr/bin/php$php_version"
+phpize_binary="/usr/bin/phpize$php_version"
+
+if [ ! -f "$php_binary" ]; then
+  echo -e "${red}PHP $php_version is not installed at $php_binary${reset}"
+  exit 1
+fi
+
+if [ ! -f "$phpize_binary" ]; then
+  echo -e "${red}phpize$php_version is not installed at $phpize_binary${reset}"
+  exit 1
+fi
+
+echo -e "${green}Activating PHP $php_version at location $php_binary ...${reset}"
+rm -f $HOME/bin/php $HOME/bin/phpize
+ln -s "$php_binary" "$HOME/bin/php"
+ln -s "$phpize_binary" "$HOME/bin/phpize"
+sleep 0.5
+php -v
